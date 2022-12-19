@@ -1,0 +1,27 @@
+{
+  "name": "nativescript-solidjs-example",
+  "main": "app/app.js",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {},
+  "dependencies": {
+    "@dominative/solid": "^0.0.4-alpha.1",
+    "@nativescript/core": "~8.4.1",
+    "@nativescript/theme": "~3.0.2",
+    "dominative": "^0.0.7-alpha.2",
+    "solid-js": "^1.6.2",
+    "undom-ng": "^1.0.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.20.5",
+    "@babel/preset-env": "^7.20.2",
+    "@nativescript/android": "8.3.1",
+    "@nativescript/preview-cli": "1.0.2",
+    "@nativescript/stackblitz": "0.0.6",
+    "@nativescript/webpack": "~5.0.12",
+    "babel": "^6.23.0",
+    "babel-loader": "^9.1.0",
+    "babel-preset-solid": "^1.6.2",
+    "solid-refresh": "^0.4.1"
+  }
+}

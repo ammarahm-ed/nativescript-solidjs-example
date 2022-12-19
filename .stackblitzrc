@@ -1,0 +1,5 @@
+{
+  "installDependencies": true,
+  "compileTrigger": "save",
+  "startCommand": "npx setup-nativescript-stackblitz && npx ns preview"
+}
