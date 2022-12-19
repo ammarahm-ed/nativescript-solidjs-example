@@ -1,6 +1,6 @@
 import { alert } from "@nativescript/core";
 
-export const Component = (props) => {
+export const Component = (props: {count: () => number}) => {
   const { count } = props;
   return (
     <button
