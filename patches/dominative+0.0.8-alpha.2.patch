@@ -1,0 +1,631 @@
+diff --git a/node_modules/dominative/index.d.ts b/node_modules/dominative/index.d.ts
+index 6ad0098..adc4add 100644
+--- a/node_modules/dominative/index.d.ts
++++ b/node_modules/dominative/index.d.ts
+@@ -1,69 +1,31 @@
+ import * as NS from "@nativescript/core";
++import {
++	CreateViewEventData,
++	ItemEventData,
++	LoadEventData,
++	NavigatedData,
++	ScrollEventData,
++} from "@nativescript/core";
++import { SelectedIndexChangedEventData } from "@nativescript/core/ui/segmented-bar";
++import {
++	AccessibilityDecrementEventData,
++	AccessibilityIncrementEventData,
++} from "@nativescript/core/ui/slider";
+ 
+ declare module "dominative" {
+-	export interface NSCustomComponentsMap {}
+-
+-	interface NSTypeofComponents {
+-		Frame: NS.Frame & typeof NS.Frame;
+-		Page: NS.Page & typeof NS.Page;
+-		AbsoluteLayout: NS.AbsoluteLayout & typeof NS.AbsoluteLayout;
+-		ActionBar: NS.ActionBar & typeof NS.ActionBar;
+-		ActionItem: NS.ActionItem & typeof NS.ActionItem;
+-		ActivityIndicator: NS.ActivityIndicator & typeof NS.ActivityIndicator;
+-		Button: NS.Button & typeof NS.Button;
+-		ContentView: NS.ContentView & typeof NS.ContentView;
+-		DatePicker: NS.DatePicker & typeof NS.DatePicker;
+-		DockLayout: NS.DockLayout & typeof NS.DockLayout;
+-		FlexboxLayout: NS.FlexboxLayout & typeof NS.FlexboxLayout;
+-		FormattedString: NS.FormattedString & typeof NS.FormattedString;
+-		GridLayout: NS.GridLayout & typeof NS.GridLayout;
+-		HtmlView: NS.HtmlView & typeof NS.HtmlView;
+-		Image: NS.Image & typeof NS.Image;
+-		Label: NS.Label & typeof NS.Label;
+-		ListPicker: NS.ListPicker & typeof NS.ListPicker;
+-		ListView: NS.ListView & typeof NS.ListView;
+-		NavigationButton: NS.NavigationButton & typeof NS.NavigationButton;
+-		Placeholder: NS.Placeholder & typeof NS.Placeholder;
+-		Progress: NS.Progress & typeof NS.Progress;
+-		ProxyViewContainer: NS.ProxyViewContainer & typeof NS.ProxyViewContainer;
+-		RootLayout: NS.RootLayout & typeof NS.RootLayout;
+-		ScrollView: NS.ScrollView & typeof NS.ScrollView;
+-		SearchBar: NS.SearchBar & typeof NS.SearchBar;
+-		SegmentedBar: NS.SegmentedBar & typeof NS.SegmentedBar;
+-		SegmentedBarItem: NS.SegmentedBarItem & typeof NS.SegmentedBarItem;
+-		Slider: NS.Slider & typeof NS.Slider;
+-		Span: NS.Span & typeof NS.Span;
+-		StackLayout: NS.StackLayout & typeof NS.StackLayout;
+-		Switch: NS.Switch & typeof NS.Switch;
+-		TabView: NS.TabView & typeof NS.TabView;
+-		TabViewItem: NS.TabViewItem & typeof NS.TabViewItem;
+-		TextField: NS.TextField & typeof NS.TextField;
+-		TextView: NS.TextView & typeof NS.TextView;
+-		TimePicker: NS.TimePicker & typeof NS.TimePicker;
+-		WebView: NS.WebView & typeof NS.WebView;
+-		WrapLayout: NS.WrapLayout & typeof NS.WrapLayout;
+-	}
+-
+-	export const NSComponentsWithTypeOfMap: NSTypeofComponents;
++	export interface PluginViewEvents {}
+ 
+-	interface TypeofPseudoElements {
+-		Prop: Prop & typeof Prop;
+-		KeyProp: KeyProp & typeof KeyProp;
+-		ArrayProp: ArrayProp & typeof ArrayProp;
+-		ItemTemplate: ItemTemplate & typeof ItemTemplate;
+-	}
++	export interface PluginViews {}
+ 
+-	export const PseudoElementsWithTypeofMap: TypeofPseudoElements;
+-
+-	interface PseudoElementsMap {
++	interface PseudoElements {
+ 		Prop: Prop;
+ 		KeyProp: KeyProp;
+ 		ArrayProp: ArrayProp;
+ 		ItemTemplate: ItemTemplate;
+ 	}
+ 
+-	interface NSComponentsMap {
+-		Frame: NS.Frame;
++	interface NativeViews extends PseudoElements, PluginViews {
++		Frame: NS.Frame & { defaultPage?: string };
+ 		Page: NS.Page;
+ 		AbsoluteLayout: NS.AbsoluteLayout;
+ 		ActionBar: NS.ActionBar;
+@@ -103,11 +65,156 @@ declare module "dominative" {
+ 		WrapLayout: NS.WrapLayout;
+ 	}
+ 
+-	export type ExtractEventNamesWithDefault<T> =
+-		| {
+-				[K in keyof T]: K extends `${infer Name}Event` ? Name : never;
+-		  }[keyof T]
+-		| ({} & string);
++	type ViewBaseEvents<C> = {
++		[K in DefaultViewEventNames as `${K}`]: (event: DOMEvent<C>) => void;
++	};
++
++	export type ItemLoadingEventData = {
++		view?: NS.ViewBase;
++		index?: number;
++		item?: any;
++		data?: any;
++	};
++
++	export type CoreViewEvents = {
++		Page: {
++			navigatingTo: (event: DOMEventWithData<"Page", NavigatedData>) => void;
++			navigatedTo: (event: DOMEventWithData<"Page", NavigatedData>) => void;
++			navigatingFrom: (event: DOMEventWithData<"Page", NavigatedData>) => void;
++			navigatedFrom: (event: DOMEventWithData<"Page", NavigatedData>) => void;
++		};
++		Frame: {
++			navigatingTo: (event: DOMEventWithData<"Frame", NavigatedData>) => void;
++			navigatedTo: (event: DOMEventWithData<"Frame", NavigatedData>) => void;
++		};
++		ActionItem: {
++			tap: (event: DOMEvent<NativeViews["ActionItem"]>) => void;
++		};
++		DatePicker: {
++			dateChange?: (
++				event: DOMPropertyChangeEvent<NativeViews["DatePicker"]>
++			) => void;
++		};
++		Button: {
++			tap: (event: DOMEvent<NativeViews["Button"]>) => void;
++		};
++		ListView: {
++			itemLoading: (event: DOMEventWithData<"ListView", ItemEventData>) => void;
++			itemTap: (event: DOMEventWithData<"ListView", ItemEventData>) => void;
++			loadMoreItems: (event: DOMEvent<NativeViews["ListView"]>) => void;
++		};
++		ListPicker: {
++			selectedIndexChange?: (
++				event: DOMPropertyChangeEvent<NativeViews["ListPicker"]>
++			) => void;
++			selectedValueChange?: (
++				event: DOMPropertyChangeEvent<NativeViews["ListPicker"]>
++			) => void;
++		};
++		Progress: {
++			valueChange: (
++				event: DOMPropertyChangeEvent<NativeViews["Progress"]>
++			) => void;
++		};
++		Placeholder: {
++			creatingView: (
++				event: DOMEventWithData<"Placeholder", CreateViewEventData>
++			) => void;
++		};
++		ScrollView: {
++			scroll: (event: DOMEventWithData<"ScrollView", ScrollEventData>) => void;
++		};
++		SearchBar: {
++			submit: (event: DOMEvent<NativeViews["SearchBar"]>) => void;
++			clear: (event: DOMEvent<NativeViews["SearchBar"]>) => void;
++			close: (event: DOMEvent<NativeViews["SearchBar"]>) => void;
++		};
++		SegmentedBar: {
++			selectedIndexChanged: (
++				event: DOMEventWithData<"SegmentedBar", SelectedIndexChangedEventData>
++			) => void;
++		};
++		Slider: {
++			accessibilityDecrement: (
++				event: DOMEventWithData<"Slider", AccessibilityIncrementEventData>
++			) => void;
++			accessibilityIncrement: (
++				event: DOMEventWithData<"Slider", AccessibilityDecrementEventData>
++			) => void;
++		};
++		Span: {
++			linkTap: (event: DOMEvent<NativeViews["Span"]>) => void;
++		};
++		Switch: {
++			checkedChange: (
++				event: DOMPropertyChangeEvent<NativeViews["Switch"]>
++			) => void;
++		};
++		TabView: {
++			selectedIndexChanged: (
++				event: DOMEventWithData<"TabView", SelectedIndexChangedEventData>
++			) => void;
++		};
++		TextField: {
++			focus: (event: DOMPropertyChangeEvent<NativeViews["TextField"]>) => void;
++			returnPress: (
++				event: DOMPropertyChangeEvent<NativeViews["TextField"]>
++			) => void;
++			blur: (event: DOMPropertyChangeEvent<NativeViews["TextField"]>) => void;
++			textChange: (
++				event: DOMPropertyChangeEvent<NativeViews["TextField"]>
++			) => void;
++		};
++		TextView: {
++			returnPress: (
++				event: DOMPropertyChangeEvent<NativeViews["TextField"]>
++			) => void;
++			blur: (event: DOMPropertyChangeEvent<NativeViews["TextField"]>) => void;
++			textChange: (
++				event: DOMPropertyChangeEvent<NativeViews["TextField"]>
++			) => void;
++		};
++		WebView: {
++			loadStarted: (event: DOMEventWithData<"WebView", LoadEventData>) => void;
++			loadFinished: (event: DOMEventWithData<"WebView", LoadEventData>) => void;
++		};
++		TimePicker: {
++			timeChange?: (
++				event: DOMPropertyChangeEvent<NativeViews["TimePicker"]>
++			) => void;
++		};
++		ItemTemplate: {
++			itemLoading: (
++				event: DOMEventWithData<"ItemTemplate", ItemLoadingEventData>
++			) => void;
++			createView: (
++				event: DOMEventWithData<"ItemTemplate", ItemLoadingEventData>
++			) => void;
++		};
++		Prop: {};
++		ArrayProp: {};
++		KeyProp: {};
++	};
++
++	export type NativeViewEvents = {
++		[K in keyof Omit<
++			NativeViews,
++			"ItemTemplate" | "ArrayProp" | "KeyProp" | "Prop"
++		>]: ViewBaseEvents<NativeViews[K]>;
++	} & CoreViewEvents &
++		PluginViewEvents;
++
++	export interface GestureEventsMap {
++		tap: (event: GenericDOMEventWithData<NS.TapGestureEventData>) => void;
++		touch: (event: GenericDOMEventWithData<NS.TouchGestureEventData>) => void;
++		pinch: (event: GenericDOMEventWithData<NS.PinchGestureEventData>) => void;
++		swipe: (event: GenericDOMEventWithData<NS.SwipeGestureEventData>) => void;
++		pan: (event: GenericDOMEventWithData<NS.PanGestureEventData>) => void;
++		rotation: (
++			event: GenericDOMEventWithData<NS.RotationGestureEventData>
++		) => void;
++		doubleTap: (event: GenericDOMEventWithData<NS.TapGestureEventData>) => void;
++	}
+ 
+ 	export type ExtractEventNames<T> = {
+ 		[K in keyof T]: K extends `${infer Name}Event` ? Name : never;
+@@ -117,17 +224,17 @@ declare module "dominative" {
+ 		is?: string;
+ 	}
+ 
+-	interface EventListener<T = HTMLViewBaseElement> {
++	interface EventListener<T = HTMLElement<ViewBaseEvents<NS.ViewBase>>> {
+ 		(event: Event<T>): void;
+ 	}
+ 
+-	interface EventListenerObject<T = HTMLViewBaseElement> {
++	interface EventListenerObject<T = HTMLElement<ViewBaseEvents<NS.ViewBase>>> {
+ 		handleEvent(event: Event<T>): void;
+ 	}
+ 
+-	type EventListenerOrEventListenerObject<T = HTMLViewBaseElement> =
+-		| EventListener<T>
+-		| EventListenerObject<T>;
++	type EventListenerOrEventListenerObject<
++		T = HTMLElement<ViewBaseEvents<NS.ViewBase>>
++	> = EventListener<T> | EventListenerObject<T>;
+ 
+ 	interface AddEventListenerOptions extends EventListenerOptions {
+ 		once?: boolean;
+@@ -147,17 +254,17 @@ declare module "dominative" {
+ 		cancelable?: boolean;
+ 	}
+ 
+-	export interface Event<T = HTMLViewBaseElement> {
++	export interface Event<T = unknown> {
+ 		/** Returns true or false depending on how event was initialized. True if event goes through its target's ancestors in reverse tree order, and false otherwise. */
+ 		readonly bubbles: boolean;
+ 		/** Returns true or false depending on how event was initialized. Its return value does not always carry meaning, but true can indicate that part of the operation during which event was dispatched, can be canceled by invoking the preventDefault() method. */
+ 		readonly cancelable: boolean;
+ 		/** Returns the object who triggeres the event. */
+-		readonly target: (EventTarget<T> & T) | null;
++		readonly target: T | null;
+ 		/** Returns the object whose event listener's callback is currently being invoked. */
+-		readonly currentTarget: (EventTarget<T> & T) | null;
++		readonly currentTarget: T | null;
+ 
+-		readonly object: (EventTarget<T> & T) | null;
++		readonly object: T | null;
+ 		/** Returns true if preventDefault() was invoked successfully to indicate cancelation, and false otherwise. */
+ 		readonly defaultPrevented: boolean;
+ 		/** Returns the type of event, e.g. "click", "hashchange", or "submit". */
+@@ -172,37 +279,40 @@ declare module "dominative" {
+ 	}
+ 
+ 	export interface DOMEvent<T> extends Event<T> {}
+-
+-	export type ExtendWithCustomEventHandlers<T, C> = {
+-		eventNames: ExtractEventNames<T>;
+-		on(
+-			eventNames: ExtractEventNames<T>,
+-			callback: (event: EventListenerOrEventListenerObject<C>) => void,
++	export type DOMEventWithData<K extends keyof NativeViews, E> = DOMEvent<
++		NativeViews[K]
++	> &
++		E;
++	export type GenericDOMEventWithData<E> = DOMEvent<NS.ViewBase> & E;
++	export interface DOMPropertyChangeEvent<T>
++		extends Event<T>,
++			Omit<NS.PropertyChangeData, "object"> {}
++
++	export class EventTarget<Events, EventNames extends keyof Events> {
++		eventNames: EventNames;
++		on<T extends EventNames>(
++			eventNames: T,
++			callback: Events[T],
+ 			thisArg?: any
+ 		): void;
+-		off(
+-			event: ExtractEventNames<T>,
+-			callback: (event: EventListenerOrEventListenerObject<C>) => void,
++		off<T extends EventNames>(
++			event: T,
++			callback: Events[T],
+ 			thisArg?: any
+ 		): void;
+-		addEventListener(
+-			type: ExtractEventNames<T>,
+-			callback: EventListenerOrEventListenerObject<C>,
++		addEventListener<T extends EventNames>(
++			type: T,
++			callback: Events[T],
+ 			options?: boolean | AddEventListenerOptions
+ 		): void;
+-		removeEventListener(
+-			type: ExtractEventNames<T>,
+-			callback: EventListenerOrEventListenerObject<C>,
++		removeEventListener<T extends EventNames>(
++			type: T,
++			callback: Events[T],
+ 			options?: boolean | EventListenerOptions
+ 		): void;
+-	} & C;
+-
+-	type HTMLViewBaseElement = ExtendWithCustomEventHandlers<
+-		typeof NS.ViewBase,
+-		HTMLElement<NS.ViewBase>
+-	>;
++	}
+ 
+-	export class Node extends NS.ViewBase {
++	export class Node<E = unknown> extends EventTarget<E, keyof E> {
+ 		constructor(nodeType: number, nodeName: string);
+ 		readonly nodeType: number;
+ 		readonly nodeName: string;
+@@ -218,42 +328,16 @@ declare module "dominative" {
+ 		replaceWith(...nodes: Node[]): void;
+ 		cloneNode(deep: boolean): Node;
+ 		remove(): void;
++		static getEventMap(fromEvent: string): string;
++		static getEventOption(type: string): EventOption | void;
++		static mapEvent(fromEvent: string, toEvent: string): void;
++		static mapProp(fromProp: string, toProp: string): void;
++		static defineEventOption(type: string, option: EventOption): void;
+ 	}
+ 
+-	export interface EventTarget<T = HTMLViewBaseElement> {
+-		/**
+-		 * Appends an event listener for events whose type attribute value is type. The callback argument sets the callback that will be invoked when the event is dispatched.
+-		 *
+-		 * The options argument sets listener-specific options. For compatibility this can be a boolean, in which case the method behaves exactly as if the value was specified as options's capture.
+-		 *
+-		 * When set to true, options's capture prevents callback from being invoked when the event's eventPhase attribute value is BUBBLING_PHASE. When false (or not present), callback will not be invoked when event's eventPhase attribute value is CAPTURING_PHASE. Either way, callback will be invoked if event's eventPhase attribute value is AT_TARGET.
+-		 *
+-		 * When set to true, options's passive indicates that the callback will not cancel the event by invoking preventDefault(). This is used to enable performance optimizations described in § 2.8 Observing event listeners.
+-		 *
+-		 * When set to true, options's once indicates that the callback will only be invoked once after which the event listener will be removed.
+-		 *
+-		 * If an AbortSignal is passed for options's signal, then the event listener will be removed when signal is aborted.
+-		 *
+-		 * The event listener is appended to target's event listener list and is not appended if it has the same type, callback, and capture.
+-		 */
+-		addEventListener(
+-			type: string,
+-			callback: EventListenerOrEventListenerObject<T> | null,
+-			options?: AddEventListenerOptions | boolean
+-		): void;
+-		/** Dispatches a synthetic event event to target and returns true if either event's cancelable attribute value is false or its preventDefault() method was not invoked, and false otherwise. */
+-		dispatchEvent(event: Event): boolean;
+-		/** Removes the event listener in target's event listener list with the same type, callback, and options. */
+-		removeEventListener(
+-			type: string,
+-			callback: EventListenerOrEventListenerObject<T> | null,
+-			options?: EventListenerOptions | boolean
+-		): void;
+-	}
+-
+-	export class Element extends ParentNode implements EventTarget {
++	export class Element<E = unknown> extends ParentNode<E> {
+ 		attributes: { namespace: string; name: string }[];
+-		style: NS.Style;
++		style: NS.Style | string;
+ 		localName: string;
+ 		//@ts-ignore
+ 		get className(): string;
+@@ -296,17 +380,44 @@ declare module "dominative" {
+ 		/** Returns element's attribute whose namespace is namespace and local name is localName, and null if there is no such attribute otherwise. */
+ 		getAttributeNS(namespace: string | null, localName: string): string | null;
+ 		//@ts-ignore
+-		addEventListener(
+-			type: string,
+-			callback: EventListenerOrEventListenerObject,
+-			options?: boolean | AddEventListenerOptions
+-		): void;
+ 		dispatchEvent(event: Event): boolean;
+-		removeEventListener(
+-			type: string,
+-			callback: EventListenerOrEventListenerObject,
+-			options?: boolean | EventListenerOptions
+-		): void;
++	}
++
++	export class ParentNode<E = unknown> extends Node<E> {
++		childElementCount: number;
++		get firstElementChild(): Node;
++		get lastElementChild(): Node;
++		get children(): Node[];
++		get childNodes(): Node;
++		append(...nodes: Node[]): void;
++		insertBefore(child: Node, ref: Node): Node;
++		replaceChild(child: Node, ref: Node): Node;
++		appendChild(child: Node): Node;
++		get textContent(): string;
++		set textContent(value: string);
++		removeChild(child: Node): Node;
++	}
++
++	class HTMLElement<E = unknown> extends Element<E> {
++		style: NS.Style | string;
++	}
++
++	class DocumentBase extends ParentNode {
++		createElement<K extends keyof HTMLElementTagNameMap | (string & {})>(
++			tagName: K
++		): //options?: ElementCreationOptions
++		//@ts-ignore
++		HTMLElementTagNameMap[K];
++		createElementNS<K extends keyof HTMLElementTagNameMap | (string & {})>(
++			namespace: string | null,
++			qualifiedName: K
++		): //options?: ElementCreationOptions
++		Element;
++		createTextNode(text: string): Text;
++		createDocumentFragment(): DocumentFragment;
++		createEvent(type: string): Event;
++		createComment(data: string): Comment;
++		get defaultView(): Scope;
+ 	}
+ 
+ 	export interface CharacterData extends Node {
+@@ -335,21 +446,6 @@ declare module "dominative" {
+ 		get textContent(): string;
+ 	}
+ 
+-	export class ParentNode extends Node {
+-		childElementCount: number;
+-		get firstElementChild(): Node;
+-		get lastElementChild(): Node;
+-		get children(): Node[];
+-		get childNodes(): Node;
+-		append(...nodes: Node[]): void;
+-		insertBefore(child: Node, ref: Node): Node;
+-		replaceChild(child: Node, ref: Node): Node;
+-		appendChild(child: Node): Node;
+-		get textContent(): string;
+-		set textContent(value: string);
+-		removeChild(child: Node): Node;
+-	}
+-
+ 	export interface Scope {
+ 		Event: Event;
+ 		Node: Node;
+@@ -368,25 +464,7 @@ declare module "dominative" {
+ 
+ 	export class SVGElement extends Element {}
+ 
+-	class HTMLElementBase extends Element {
+-		style: NS.Style;
+-	}
+-
+-	export type HTMLElement<T = any> = Omit<HTMLElementBase & T, "on" | "off">;
+-
+-	export type DominativeExtended<T = NS.ViewBase> = T & {};
+-
+-	class TweakableBase {
+-		static getEventMap(fromEvent: string): string;
+-		static getEventOption(type: string): EventOption | void;
+-		static mapEvent(fromEvent: string, toEvent: string): void;
+-		static mapProp(fromProp: string, toProp: string): void;
+-		static defineEventOption(type: string, option: EventOption): void;
+-	}
+-
+-	export type Tweakable<T> = TweakableBase & T;
+-
+-	export class Prop extends HTMLElementBase {
++	export class Prop extends HTMLElement {
+ 		constructor(key: string, type: string);
+ 		get key(): string;
+ 		set key(key: string);
+@@ -422,50 +500,81 @@ declare module "dominative" {
+ 		createView(): HTMLElement;
+ 	}
+ 
+-	class DocumentBase extends ParentNode {
+-		createElement<K extends keyof HTMLElementTagNameMap | (string & {})>(
+-			tagName: K
+-		): //options?: ElementCreationOptions
+-		//@ts-ignore
+-		HTMLElementTagNameMap[K];
+-		createElementNS<K extends keyof HTMLElementTagNameMap | (string & {})>(
+-			namespace: string | null,
+-			qualifiedName: K
+-		): //options?: ElementCreationOptions
+-		Element;
+-		createTextNode(text: string): Text;
+-		createDocumentFragment(): DocumentFragment;
+-		createEvent(type: string): Event;
+-		createComment(data: string): Comment;
+-		get defaultView(): Scope;
++	export type DominativeExtended<T = NS.ViewBase> = T & {};
++
++	class TweakableBase {
++		static getEventMap(fromEvent: string): string;
++		static getEventOption(type: string): EventOption | void;
++		static mapEvent(fromEvent: string, toEvent: string): void;
++		static mapProp(fromProp: string, toProp: string): void;
++		static defineEventOption(type: string, option: EventOption): void;
+ 	}
+ 
++	export type Tweakable<T> = TweakableBase & T;
++
+ 	type DominativeExtendedMap = {
+-		[K in keyof NSComponentsMap]: DominativeExtended<NSComponentsMap[K]>;
++		[K in keyof NativeViews]: DominativeExtended<NativeViews[K]>;
+ 	} & {
+-		[K in keyof PseudoElementsMap]: DominativeExtended<PseudoElementsMap[K]>;
++		[K in keyof PseudoElements]: DominativeExtended<PseudoElements[K]>;
+ 	};
+ 
+ 	type TweakableMap = {
+-		[K in keyof NSComponentsMap]: Tweakable<DominativeExtendedMap[K]>;
++		[K in keyof NativeViews]: Tweakable<DominativeExtendedMap[K]>;
+ 	} & {
+-		[K in keyof PseudoElementsMap]: Tweakable<DominativeExtendedMap[K]>;
++		[K in keyof PseudoElements]: Tweakable<DominativeExtendedMap[K]>;
+ 	};
+ 
+-	type HTMLElementTagNameMap = {
+-		[K in keyof NSComponentsMap]: ExtendWithCustomEventHandlers<
+-			typeof NSComponentsWithTypeOfMap[K],
+-			HTMLElement<TweakableMap[K]>
+-		>;
+-	} & {
+-		[K in keyof NSCustomComponentsMap]: HTMLElement<
+-			Tweakable<DominativeExtended<NSCustomComponentsMap[K]>>
+-		>;
+-	} & {
+-		[K in keyof PseudoElementsMap]: ExtendWithCustomEventHandlers<
+-			typeof PseudoElementsWithTypeofMap[K],
+-			HTMLElement<TweakableMap[K]>
+-		>;
++	type OmittedProperties =
++		| "on"
++		| "off"
++		| "parentNode"
++		| "removeEventListener"
++		| "addEventListener"
++		| "style"
++		| "removeChild";
++
++	type t = ExtractEventNames<Omit<typeof NS.DatePicker, keyof NS.View>>;
++
++	type DefaultViewEventNames = ExtractEventNames<
++		typeof NS.View & {
++			sendAccessibilityEvent: string;
++			androidBackPressedEvent: string;
++		}
++	>;
++
++	// interface NSEvents {
++	// 	Page: "navigatingTo" | "navigatedTo" | "navigatingFrom" | "navigatedFrom",
++	// 	Frame: "androidOptionSelected" | "navigatingTo" | "navigatedTo",
++	// 	Button: "tap",
++	// 	ListView: "itemLoading" | "itemTap" | "loadMoreItems",
++	// 	Placeholder: "creatingView",
++	// 	ScrollView: "scroll",
++	// 	SearchBar: "submit" | "clear"
++	// 	SegmentedBar: "selectedIndexChanged",
++	// 	Slider: "accessibilityDecrement" | "accessibilityIncrement",
++	// 	Span: "linkTap",
++	// 	Switch: "checkedChange",
++	// 	TabView: "selectedIndexChanged",
++	// 	TextField: "focus" | "returnPress" | "blur" | "textChange",
++	// 	TextView: "focus" | "blur" | "textChange",
++	// 	WebView: "loadStarted" | "loadFinished",
++	// }
++	//@ts-ignore
++	//type NSComponentEventNamesMap = {[K in ComponentKeyMap ]: DefaultViewEventNames | NSEvents[K]}
++
++	export type ComponentKeyMap =
++		| keyof NativeViews
++		| keyof PseudoElements
++		| keyof PluginViews;
++
++	export type NativeViewWrapper<K extends keyof NativeViewEvents> = Omit<
++		NativeViews[K],
++		OmittedProperties
++	> &
++		HTMLElement<NativeViewEvents[K]>;
++
++	export type HTMLElementTagNameMap = {
++		[K in keyof NativeViewEvents]: NativeViewWrapper<K>;
+ 	};
+ 
+ 	export type Document = DocumentBase &

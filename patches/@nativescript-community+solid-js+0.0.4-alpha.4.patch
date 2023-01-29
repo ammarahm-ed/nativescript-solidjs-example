@@ -1,0 +1,377 @@
+diff --git a/node_modules/@nativescript-community/solid-js/index.d.ts b/node_modules/@nativescript-community/solid-js/index.d.ts
+index e9d469b..7e9e7ad 100644
+--- a/node_modules/@nativescript-community/solid-js/index.d.ts
++++ b/node_modules/@nativescript-community/solid-js/index.d.ts
+@@ -1,12 +1,29 @@
+-import { Style, ViewBase } from "@nativescript/core";
+ import {
++  CreateViewEventData,
++  ItemEventData,
++  LoadEventData,
++  NavigatedData,
++  ScrollEventData,
++  Style,
++  View,
++  ViewBase,
++} from "@nativescript/core";
++import { SelectedIndexChangedEventData } from "@nativescript/core/ui/segmented-bar";
++import {
++  AccessibilityDecrementEventData,
++  AccessibilityIncrementEventData,
++} from "@nativescript/core/ui/slider";
++import {
++  DefaultViewEventNames,
+   Document,
+   DOMEvent,
+-  HTMLElementTagNameMap,
++  GestureEventsMap,
+   Node,
+-  NSComponentsMap,
+-  NSCustomComponentsMap,
+-  PseudoElementsMap,
++  NativeViews,
++  PluginViewEvents,
++  ItemLoadingEventData,
++  DOMEventWithData,
++  DOMPropertyChangeEvent
+ } from "dominative";
+ import { JSX as SolidJSX } from "solid-js";
+ 
+@@ -36,34 +53,136 @@ export type Filter<
+   Needle extends string
+ > = Set extends `${Needle}${infer _X}` ? never : Set;
+ 
+-export type MapNativeViewEvents<T, C> = {
+-  [K in T as `on:${K}`]: (event: DOMEvent<C>) => void;
++type GestureEvents = {
++  [K in keyof GestureEventsMap as `on:${K}`]: GestureEventsMap[K];
+ };
+ 
+-export type MapPseudoElementEvents<T> = {
+-  [K in T as `on:${K}`]: (event: {
+-    view?: ViewBase;
+-    index?: number;
+-    item?: any;
+-    data?: any;
+-  }) => void;
++type ViewEvents<C> = {
++  [K in DefaultViewEventNames as `on:${K}`]: (event: DOMEvent<C>) => void;
+ };
+ 
+-type NSComponentEventsMap = {
+-  [K in keyof NSComponentsMap]: MapNativeViewEvents<
+-    HTMLElementTagNameMap[K]["eventNames"],
+-    HTMLElementTagNameMap[K]
+-  >;
+-} & {
+-  [K in keyof NSCustomComponentsMap]: MapNativeViewEvents<
+-    NSCustomComponentsMap[K]["eventNames"],
+-    NSCustomComponentsMap[K]
+-  >;
+-} & {
+-  ItemTemplate: MapPseudoElementEvents<"createView" | "itemLoading">;
++type MappedPluginViewEvents = {
++  [K in keyof PluginViewEvents]: {
++    [E in keyof PluginViewEvents[K] as `on:${E}`]: PluginViewEvents[K][E]
++  }
++}
++
++type NativeViewEventsMap = {
++  [K in keyof Omit<
++    NativeViews,
++    "ItemTemplate" | "ArrayProp" | "KeyProp" | "Prop"
++  >]: ViewEvents<NativeViews[K]>
+ } & {
+-  [K in keyof Omit<PseudoElementsMap, "ItemTemplate">]: {};
+-};
++  Page: {
++    "on:navigatingTo": (event: DOMEventWithData<"Page", NavigatedData>) => void;
++    "on:navigatedTo": (event: DOMEventWithData<"Page", NavigatedData>) => void;
++    "on:navigatingFrom": (event: DOMEventWithData<"Page", NavigatedData>) => void;
++    "on:navigatedFrom": (event: DOMEventWithData<"Page", NavigatedData>) => void;
++  };
++  Frame: {
++    "on:navigatingTo": (event: DOMEventWithData<"Frame", NavigatedData>) => void;
++    "on:navigatedTo": (event: DOMEventWithData<"Frame", NavigatedData>) => void;
++  };
++  ActionItem: {
++    "on:tap": (event: DOMEvent<NativeViews["ActionItem"]>) => void;
++  };
++  DatePicker: {
++    "on:dateChange"?: (
++      event: DOMPropertyChangeEvent<NativeViews["DatePicker"]>
++    ) => void;
++  };
++  Button: {
++    "on:tap": (event: DOMEvent<NativeViews["Button"]>) => void;
++  };
++  ListView: {
++    "on:itemLoading": (event: DOMEventWithData<"ListView", ItemEventData>) => void;
++    "on:itemTap": (event: DOMEventWithData<"ListView", ItemEventData>) => void;
++    "on:loadMoreItems": (event: DOMEvent<NativeViews["ListView"]>) => void;
++  };
++  ListPicker: {
++    "on:selectedIndexChange"?: (event: DOMPropertyChangeEvent<NativeViews["ListPicker"]>) => void;
++    "on:selectedValueChange"?: (event: DOMPropertyChangeEvent<NativeViews["ListPicker"]>) => void;
++  }
++  Progress: {
++    "on:valueChange":(event: DOMPropertyChangeEvent<NativeViews["Progress"]>) => void;
++  }
++  Placeholder: {
++    "on:creatingView": (
++      event: DOMEventWithData<"Placeholder", CreateViewEventData>
++    ) => void;
++  };
++  ScrollView: {
++    "on:scroll": (event: DOMEventWithData<"ScrollView", ScrollEventData>) => void;
++  };
++  SearchBar: {
++    "on:submit": (event: DOMEvent<NativeViews["SearchBar"]>) => void;
++    "on:clear": (event: DOMEvent<NativeViews["SearchBar"]>) => void;
++    "on:close": (event: DOMEvent<NativeViews["SearchBar"]>) => void;
++  };
++  SegmentedBar: {
++    "on:selectedIndexChanged": (
++      event: DOMEventWithData<"SegmentedBar", SelectedIndexChangedEventData>
++    ) => void;
++  };
++  Slider: {
++    "on:accessibilityDecrement": (
++      event: DOMEventWithData<"Slider", AccessibilityIncrementEventData>
++    ) => void;
++    "on:accessibilityIncrement": (
++      event: DOMEventWithData<"Slider", AccessibilityDecrementEventData>
++    ) => void;
++  };
++  Span: {
++    "on:linkTap": (event: DOMEvent<NativeViews["Span"]>) => void;
++  };
++  Switch: {
++    "on:checkedChange": (
++      event: DOMPropertyChangeEvent<NativeViews["Switch"]>
++    ) => void;
++  };
++  TabView: {
++    "on:selectedIndexChanged": (
++      event: DOMEventWithData<"TabView", SelectedIndexChangedEventData>
++    ) => void;
++  };
++  TextField: {
++    "on:focus": (event: DOMPropertyChangeEvent<NativeViews["TextField"]>) => void;
++    "on:returnPress": (
++      event: DOMPropertyChangeEvent<NativeViews["TextField"]>
++    ) => void;
++    "on:blur": (event: DOMPropertyChangeEvent<NativeViews["TextField"]>) => void;
++    "on:textChange": (
++      event: DOMPropertyChangeEvent<NativeViews["TextField"]>
++    ) => void;
++  };
++  TextView: {
++    "on:returnPress": (
++      event: DOMPropertyChangeEvent<NativeViews["TextField"]>
++    ) => void;
++    "on:blur": (event: DOMPropertyChangeEvent<NativeViews["TextField"]>) => void;
++    "on:textChange": (
++      event: DOMPropertyChangeEvent<NativeViews["TextField"]>
++    ) => void;
++  };
++  WebView: {
++    "on:loadStarted": (event: DOMEventWithData<"WebView", LoadEventData>) => void;
++    "on:loadFinished": (event: DOMEventWithData<"WebView", LoadEventData>) => void;
++  };
++  TimePicker: {
++    "on:timeChange"?: (event: DOMPropertyChangeEvent<NativeViews["TimePicker"]>) => void;
++  }
++  ItemTemplate: {
++    "on:itemLoading": (
++      event: DOMEventWithData<"ItemTemplate", ItemLoadingEventData>
++    ) => void;
++    "on:createView": (
++      event: DOMEventWithData<"ItemTemplate", ItemLoadingEventData>
++    ) => void;
++  };
++  Prop: {};
++  ArrayProp: {};
++  KeyProp: {};
++} & MappedPluginViewEvents
+ 
+ export type IgnoredKeys =
+   | "cssType"
+@@ -106,9 +225,16 @@ export type IgnoredKeys =
+   | "parentNode"
+   | "height"
+   | "width"
+-  | "appendData";
++  | "on"
++  | "off"
++  | "appendData"
++  | "disposeNativeView"
++  | "callLoaded"
++  | "callUnloaded"
++  | "notify"
++  | "notifyPropertyChange";
+ 
+-export type PickedNSComponentKeys<T> = Omit<
++export type PickedNSComponentKeys<T = ViewBase> = Omit<
+   T,
+   Filter<
+     keyof T,
+@@ -124,55 +250,106 @@ export type PickedNSComponentKeys<T> = Omit<
+     | "perform"
+     | "go"
+     | "on"
++    | "add"
++    | "remove"
+   >
+ >;
++
++
++type NativeViewStyle = Partial<
++| Style
++| {
++    color: string;
++    width: number | string;
++    height: number | string;
++    backgroundColor: string;
++    borderTopColor: string;
++    borderRightColor: string;
++    borderBottomColor: string;
++    borderLeftColor: string;
++    boxShadow: string;
++    textShadow: string;
++  }
++>
+ type OverrideProperties = {
+-  style: Partial<
+-    | Style
+-    | {
+-        color: string;
+-        width: number | string;
+-        height: number | string;
+-        backgroundColor: string;
+-        borderTopColor: string;
+-        borderRightColor: string;
+-        borderBottomColor: string;
+-        borderLeftColor: string;
+-        boxShadow: string;
+-        textShadow: string;
+-      }
+-  >;
+-  height: string | number;
+-  width: string | number;
+-  class: string;
++  style: NativeViewStyle | string;
++  "android:style": NativeViewStyle | string;
++  "ios:style": NativeViewStyle | string;
++  height?: string | number;
++  "ios:height"?: string | number;
++  "android:height"?: string | number;
++  width?: string | number;
++  "android:width"?: string | number;
++  "ios:width"?: string | number
++  "android:class"?: string;
++  "ios:class"?: string;
++  "class"?: string;
+ };
+ 
+-export type DefineNSComponent<T, E> = Partial<
+-  Omit<
+-    T,
+-    IgnoredKeys | keyof OverrideProperties | keyof PickedNSComponentKeys<T>
+-  > &
+-    E
++type OverridePropertiesKeys = keyof OverrideProperties;
++type DefaultPickedKeys = keyof PickedNSComponentKeys<View>;
++type ViewBaseComponent = Omit<
++  View,
++  IgnoredKeys | OverridePropertiesKeys | DefaultPickedKeys
+ >;
++type PlatformIOSKeyMap<T = ViewBaseComponent> = {
++  [K in keyof T as `ios:${K}`]: T[K];
++};
++
++type PlatformAndroidKeyMap<T = ViewBaseComponent> = {
++  [K in keyof T as `android:${K}`]: T[K];
++};
++
++type PlatformKeyedViewBase = PlatformIOSKeyMap & PlatformAndroidKeyMap;
++
++type ExtendWithPlatformKeys<T> = T &
++  PlatformAndroidKeyMap<T> &
++  PlatformIOSKeyMap<T>;
++
++type AppendStringTypeToKeys<T> = {
++  [K in keyof T]: T[K] | string;
++};
++
++type KeysToOmit<T> = IgnoredKeys | OverridePropertiesKeys | keyof PickedNSComponentKeys<T>;
++
++type FilterViewProps<T> = Omit<T, KeysToOmit<T>>
++
++export type DefineNSComponent<T, E> = ExtendWithPlatformKeys<
++  AppendStringTypeToKeys<FilterViewProps<T>>
++  > & E;
+ 
+ declare global {
+   var document: Document;
+ }
+ 
++type JSXElementAttributes<K extends keyof NativeViewEventsMap> = SolidJSX.CustomAttributes<
++NativeViews[K]
++> &
++Partial<
++  DefineNSComponent<NativeViews[K], NativeViewEventsMap[K]> &
++    OverrideProperties & {
++      children: Element;
++    }
++>;
++
++type NativeJSXElements = {
++[K in keyof NativeViewEventsMap as `${Lowercase<K>}`]: JSXElementAttributes<K>;
++};
++
+ declare global {
+   namespace JSX {
+-    function mapElementTag<K extends keyof NSDefaultComponents>(
++    function mapElementTag<K extends keyof NativeJSXElements>(
+       tag: K
+-    ): NSDefaultComponents[K];
++    ): NativeJSXElements[K];
+ 
+     function createElement<
+-      Element extends NSDefaultComponents,
+-      Key extends keyof NSDefaultComponents
++      Element extends NativeJSXElements,
++      Key extends keyof NativeJSXElements
+     >(element: Key | undefined | null, attrs: Element[Key]): Element[Key];
+ 
+     function createElement<
+-      Element extends NSDefaultComponents,
+-      Key extends keyof NSDefaultComponents,
++      Element extends NativeJSXElements,
++      Key extends keyof NativeJSXElements,
+       T
+     >(
+       element: Key | undefined | null,
+@@ -208,20 +385,6 @@ declare global {
+     interface ExplicitAttributes {}
+     interface CustomEvents {}
+     interface CustomCaptureEvents {}
+-
+-    type JSXElementAttributes<K> = SolidJSX.CustomAttributes<
+-      NSComponentsMap[K]
+-    > &
+-      Partial<
+-        DefineNSComponent<HTMLElementTagNameMap[K], NSComponentEventsMap[K]> &
+-          OverrideProperties & {
+-            children: Element;
+-          }
+-      >;
+-
+-    type NSDefaultComponents = {
+-      [K in keyof HTMLElementTagNameMap as `${Lowercase<K>}`]: JSXElementAttributes<K>;
+-    };
+-    interface IntrinsicElements extends NSDefaultComponents {}
++    interface IntrinsicElements extends NativeJSXElements {}
+   }
+ }
