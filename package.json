@@ -27,7 +27,7 @@
     "babel": "^6.23.0",
     "babel-loader": "^9.1.0",
     "babel-preset-solid": "^1.6.6",
-    "patch-package": "^6.5.0",
+    "patch-package": "^6.5.1",
     "solid-refresh": "^0.4.1",
     "typescript": "4.9.4"
   }
