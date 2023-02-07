@@ -12,7 +12,7 @@
     "@nativescript/theme": "~3.0.2",
     "dominative": "^0.0.8-alpha.2",
     "solid-js": "^1.6.6",
-    "solid-navigation": "file:../solid-navigation",
+    "solid-navigation": "1.0.0-alpha.6",
     "solid-simple-table": "^2.0.0",
     "undom-ng": "^1.0.2"
   },
