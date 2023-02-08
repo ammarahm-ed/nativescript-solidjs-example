@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@nativescript-community/solid-js": "^0.0.4-alpha.4",
+    "@nativescript-community/ui-collectionview": "^4.0.70",
     "@nativescript/core": "~8.4.1",
     "@nativescript/theme": "~3.0.2",
     "dominative": "^0.0.8-alpha.2",

@@ -1,5 +1,5 @@
 import { Component, createSignal } from "solid-js";
-import { List } from "./list";
+import { DynamicList } from "./collectionview";
 
 const Item: Component<{
   item?: () => any;
@@ -7,13 +7,17 @@ const Item: Component<{
   type: () => string;
 }> = (props) => {
   return props.type() === "even" ? (
-    <flexboxlayout style={{ height: 300, backgroundColor: "white" }}>
+    <contentview>
+      <flexboxlayout style={{ height: 100,padding:10, backgroundColor: "#f0f0f0" }}>
       <label text={props.index?.() + " " + props.type()} />
     </flexboxlayout>
+    </contentview>
   ) : (
-    <flexboxlayout style={{ height: 300, backgroundColor: "red" }}>
+    <contentview>
+      <flexboxlayout style={{ height: 50,padding:10, backgroundColor: "#a9a9a9" }}>
       <label text={props.index?.() + " " + props.type()} />
     </flexboxlayout>
+    </contentview>
   );
 };
 
@@ -38,7 +42,7 @@ export const Home = () => {
         <contentview style={{
           flexShrink :1
         }}>
-          <List
+          <DynamicList
             itemTypes={["even", "odd"]}
             items={items()}
             renderItem={({ item, index, type }) => (
