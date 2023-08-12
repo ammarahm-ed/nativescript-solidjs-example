@@ -24,7 +24,6 @@ export const DynamicList: Component<
   const owner = getOwner();
   const { items, renderItem, onItemType, itemTypes, ...restProps } = props;
   const templates = props.itemTypes || ["_default"];
-
   return (
     <collectionview
       {...restProps}
@@ -38,6 +37,11 @@ export const DynamicList: Component<
       }}
       itemTemplateSelector={(item: any, index: any) => {
         return onItemType?.(item, index) || "_default";
+      }}
+      style={{
+        height: 400,
+        width: 400,
+        backgroundColor: "#f0f0f0",
       }}
     >
       <arrayprop key="itemTemplates">
@@ -61,7 +65,9 @@ export const DynamicList: Component<
                     const element = children(() =>
                       renderItem({ item, index, type: type })
                     );
-                    (event.view as ContentView)._addView(element());
+
+                    (event.view as ContentView).content = element();
+
                     (event.view as any).__update_solid_context = (
                       item: any,
                       index: number,

@@ -18,6 +18,7 @@
     "@babel/preset-env": "^7.20.2",
     "@babel/preset-typescript": "7.22.5",
     "@nativescript/android": "8.5.1",
+    "@nativescript/ios": "8.5.2",
     "@nativescript/webpack": "~5.0.17",
     "babel": "^6.23.0",
     "babel-loader": "^9.1.3",

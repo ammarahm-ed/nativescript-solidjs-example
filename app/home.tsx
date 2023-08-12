@@ -7,26 +7,22 @@ const Item: Component<{
   type: () => string;
 }> = (props) => {
   return props.type() === "even" ? (
-    <contentview>
-      <flexboxlayout
-        style={{ height: 100, padding: 10, backgroundColor: "#f0f0f0" }}
-      >
-        <label text={props.index?.() + " " + props.type()} />
-      </flexboxlayout>
-    </contentview>
+    <stacklayout
+      style={{ height: 100, padding: 10, backgroundColor: "#f0f0f0" }}
+    >
+      <label text={props.index?.() + " " + props.type()} />
+    </stacklayout>
   ) : (
-    <contentview>
-      <flexboxlayout
-        style={{ height: 50, padding: 10, backgroundColor: "#a9a9a9" }}
-      >
-        <label text={props.index?.() + " " + props.type()} />
-      </flexboxlayout>
-    </contentview>
+    <stacklayout
+      style={{ height: 50, padding: 10, backgroundColor: "#a9a9a9" }}
+    >
+      <label text={props.index?.() + " " + props.type()} />
+    </stacklayout>
   );
 };
 
 export const Home = () => {
-  const [items, setItems] = createSignal([0]);
+  const [items, setItems] = createSignal([0, 1, 2, 3, 4, 5]);
   return (
     <>
       <actionbar title="Home" />
