@@ -8,11 +8,8 @@ registerElement(
 );
 
 declare module "dominative" {
-  export interface PluginViews {
-    CollectionView: CollectionView & { itemTemplateSelector: any };
-  }
-  export interface PluginViewEvents {
-    CollectionView: {};
+  export interface NSCustomComponentsMap {
+    CollectionView: CollectionView & { [name: string]: any };
   }
 }
 

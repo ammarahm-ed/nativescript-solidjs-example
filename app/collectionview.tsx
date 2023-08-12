@@ -30,7 +30,7 @@ export const DynamicList: Component<
       {...restProps}
       items={{
         length: props.items?.length,
-        getItem(index) {
+        getItem(index: number) {
           return {
             index: props.items?.[index],
           };
