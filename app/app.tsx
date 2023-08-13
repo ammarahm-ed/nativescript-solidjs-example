@@ -5,14 +5,11 @@ import { CollectionView } from "@nativescript-community/ui-collectionview";
 //@ts-ignore
 import { makeListView, registerElement, makeView } from "dominative";
 import { Settings } from "./routes/settings";
-import { Canvas } from "@nativescript/canvas";
 
 registerElement(
   "collectionview",
   makeListView(CollectionView, { force: true })
 );
-
-registerElement("canvas", makeView(Canvas));
 
 declare global {
   interface HTMLCollectionViewElement extends HTMLListViewElement {}
