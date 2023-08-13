@@ -1,6 +1,6 @@
 {
   "name": "nativescript-solidjs-example",
-  "main": "app/app.js",
+  "main": "app/index.js",
   "version": "1.0.0",
   "private": true,
   "scripts": {},
@@ -10,7 +10,7 @@
     "@nativescript/core": "~8.5.9",
     "dominative": "^0.0.9-alpha.2",
     "solid-js": "^1.7.11",
-    "solid-navigation": "1.0.0-alpha.6",
+    "solid-navigation": "^1.0.0-alpha.7",
     "undom-ng": "^1.0.10"
   },
   "devDependencies": {

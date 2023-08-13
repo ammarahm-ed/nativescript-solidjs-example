@@ -6,6 +6,7 @@ import {
   runWithOwner,
   Component,
   For,
+  JSX,
 } from "solid-js";
 
 export const List: Component<
@@ -59,7 +60,7 @@ export const List: Component<
                   const element = children(() =>
                     renderItem({ item, index, type: type })
                   );
-                  event.view = element();
+                  event.view = element() as never;
                   (event.view as any).__update_solid_context = (
                     item: any,
                     index: number,
