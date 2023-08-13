@@ -1,9 +1,9 @@
-import { ItemLoadingEventData } from "@nativescript-dom/core-types";
-import { Home } from "./routes/home";
-import { Route, StackRouter } from "./router";
 import { CollectionView } from "@nativescript-community/ui-collectionview";
+import { ItemLoadingEventData } from "@nativescript-dom/core-types";
+import { Route, StackRouter } from "./router";
+import { Home } from "./routes/home";
 //@ts-ignore
-import { makeListView, registerElement, makeView } from "dominative";
+import { makeListView, registerElement } from "dominative";
 import { Settings } from "./routes/settings";
 
 registerElement(
