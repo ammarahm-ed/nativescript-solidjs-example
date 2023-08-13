@@ -26,7 +26,13 @@ export const Home = () => {
   return (
     <>
       <actionbar title="Home" />
-      <flexboxlayout flexDirection="column">
+      <flexboxlayout
+        style={{
+          height: "100%",
+          width: "100%",
+          flexDirection: "column",
+        }}
+      >
         <button
           text="Add item"
           on:tap={() => {
@@ -37,6 +43,8 @@ export const Home = () => {
           style={{
             height: 50,
             minHeight: 50,
+            backgroundColor: "rgb(44, 79, 124)",
+            color: "white",
           }}
         />
 
