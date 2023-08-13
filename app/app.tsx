@@ -3,12 +3,16 @@ import { Home } from "./routes/home";
 import { Route, StackRouter } from "./router";
 import { CollectionView } from "@nativescript-community/ui-collectionview";
 //@ts-ignore
-import { makeListView, registerElement } from "dominative";
+import { makeListView, registerElement, makeView } from "dominative";
 import { Settings } from "./routes/settings";
+import { Canvas } from "@nativescript/canvas";
+
 registerElement(
   "collectionview",
   makeListView(CollectionView, { force: true })
 );
+
+registerElement("canvas", makeView(Canvas));
 
 declare global {
   interface HTMLCollectionViewElement extends HTMLListViewElement {}
@@ -17,9 +21,16 @@ declare global {
     prototype: HTMLCollectionViewElement;
     new (): HTMLCollectionViewElement;
   };
+
+  interface HTMLCollectionViewElement extends HTMLListViewElement {}
+
+  var HTMLCollectionViewElement: {
+    prototype: HTMLCollectionViewElement;
+    new (): HTMLCollectionViewElement;
+  };
 }
 
-declare module "solid-js" {
+declare module "@nativescript-dom/solidjs-types/jsx-runtime" {
   export namespace JSX {
     interface IntrinsicElements {
       /**
@@ -28,6 +39,7 @@ declare module "solid-js" {
       collectionview: Partial<
         HTMLListViewElementAttributes<HTMLCollectionViewElement>
       >;
+
       /**
        * Register dominative elements
        */

@@ -17,7 +17,7 @@ export const Home = () => {
       >
         <button
           text="Go to Settings"
-          on:tap={() => {
+          on:tap={(event) => {
             router.navigate("Settings");
           }}
           style={{
@@ -28,16 +28,5 @@ export const Home = () => {
         />
       </flexboxlayout>
     </>
-  );
-};
-
-const Ele = () => {
-  return (
-    <button
-      text="Hello"
-      style={{
-        color: "red",
-      }}
-    />
   );
 };

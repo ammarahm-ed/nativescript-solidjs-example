@@ -1,3 +1,4 @@
+import { JSX } from "@nativescript-dom/solidjs-types/jsx-runtime";
 import { ContentView } from "@nativescript/core";
 import {
   children,
@@ -5,7 +6,6 @@ import {
   createSignal,
   For,
   getOwner,
-  JSX,
   Owner,
   runWithOwner,
 } from "solid-js";

@@ -1,3 +1,4 @@
+import { JSX } from "@nativescript-dom/solidjs-types/jsx-runtime";
 import {
   children,
   createSignal,
@@ -6,7 +7,6 @@ import {
   runWithOwner,
   Component,
   For,
-  JSX,
 } from "solid-js";
 
 export const List: Component<
