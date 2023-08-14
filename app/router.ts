@@ -4,8 +4,8 @@ declare module "solid-navigation" {
   export interface Routers {
     Default: {
       Home: RouteDefinition;
-      Settings: RouteDefinition;
-      Feed: RouteDefinition;
+      GalaxyButton: RouteDefinition;
+      GrowingPlant: RouteDefinition;
     };
   }
 }

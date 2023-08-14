@@ -1,15 +1,19 @@
 import { CollectionView } from "@nativescript-community/ui-collectionview";
 import { ItemLoadingEventData } from "@nativescript-dom/core-types";
+import { RiveView } from '@nativescript/rive'
 import { Route, StackRouter } from "./router";
 import { Home } from "./routes/home";
 //@ts-ignore
-import { makeListView, registerElement } from "dominative";
-import { Settings } from "./routes/settings";
+import { makeListView, makeView, registerElement } from "dominative";
+import { GalaxyButton } from "./routes/galaxy-button";
+import { GrowingPlant } from "./routes/growing-plant";
 
 registerElement(
   "collectionview",
   makeListView(CollectionView, { force: true })
 );
+
+registerElement('riveview', RiveView)
 
 declare global {
   interface HTMLCollectionViewElement extends HTMLListViewElement {}
@@ -65,7 +69,8 @@ const App = () => {
   return (
     <StackRouter initialRouteName="Home">
       <Route name="Home" component={Home as any} />
-      <Route name="Settings" component={Settings as any} />
+      <Route name="GalaxyButton" component={GalaxyButton as any} />
+      <Route name="GrowingPlant" component={GrowingPlant as any} />
     </StackRouter>
   );
 };
