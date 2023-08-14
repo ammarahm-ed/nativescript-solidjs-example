@@ -1,10 +1,9 @@
 import { CollectionView } from "@nativescript-community/ui-collectionview";
 import { ItemLoadingEventData } from "@nativescript-dom/core-types";
-import { RiveView } from '@nativescript/rive'
+import { RiveView } from "@nativescript/rive";
 import { Route, StackRouter } from "./router";
 import { Home } from "./routes/home";
-//@ts-ignore
-import { makeListView, makeView, registerElement } from "dominative";
+import { makeListView, registerElement } from "dominative";
 import { GalaxyButton } from "./routes/galaxy-button";
 import { GrowingPlant } from "./routes/growing-plant";
 
@@ -13,7 +12,7 @@ registerElement(
   makeListView(CollectionView, { force: true })
 );
 
-registerElement('riveview', RiveView)
+registerElement("riveview", RiveView);
 
 declare global {
   interface HTMLCollectionViewElement extends HTMLListViewElement {}
@@ -68,9 +67,9 @@ declare module "@nativescript-dom/solidjs-types/jsx-runtime" {
 const App = () => {
   return (
     <StackRouter initialRouteName="Home">
-      <Route name="Home" component={Home as any} />
-      <Route name="GalaxyButton" component={GalaxyButton as any} />
-      <Route name="GrowingPlant" component={GrowingPlant as any} />
+      <Route name="Home" component={Home} />
+      <Route name="GalaxyButton" component={GalaxyButton} />
+      <Route name="GrowingPlant" component={GrowingPlant} />
     </StackRouter>
   );
 };
